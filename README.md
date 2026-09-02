@@ -34,19 +34,11 @@
 
 ## 🖼️ Demo
 
-建議在專案中建立 `screenshots/` 資料夾，放入實際辨識畫面。
+### 即時交通號誌辨識畫面
 
-```text
-screenshots/
-└── traffic_light_detection.png
-```
+![Traffic Light Detection Demo 1](screenshots/traffic_light_detection01.jpg)
 
-加入截圖後，把下面這行放到 README 即可：
-
-```markdown
-![Traffic Light Detection Demo](screenshots/traffic_light_detection01.jpg)
-![Traffic Light Detection Demo](screenshots/traffic_light_detection02.jpg)
-```
+![Traffic Light Detection Demo 2](screenshots/traffic_light_detection02.jpg)
 
 ---
 
