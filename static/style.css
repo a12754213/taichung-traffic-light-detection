@@ -1,0 +1,76 @@
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background: #111;
+    color: white;
+}
+
+.camera-grid {
+    display: grid;
+    grid-template-columns: repeat(
+        auto-fill,
+        minmax(280px, 1fr)
+    );
+    gap: 15px;
+}
+
+.camera-card {
+    background: #222;
+    color: white;
+    padding: 20px;
+    border-radius: 10px;
+    text-decoration: none;
+}
+
+.camera-card:hover {
+    background: #333;
+}
+
+.back-button {
+    color: white;
+    text-decoration: none;
+    font-size: 18px;
+}
+
+.video-container {
+    margin-top: 20px;
+}
+
+.cctv-video {
+    width: 100%;
+    max-width: 1000px;
+    border-radius: 10px;
+}
+
+.search-area {
+    margin-bottom: 25px;
+}
+
+.search-input {
+    width: 100%;
+    max-width: 600px;
+    padding: 14px 16px;
+
+    font-size: 18px;
+
+    color: white;
+    background: #222;
+
+    border: 1px solid #444;
+    border-radius: 10px;
+}
+
+.search-input:focus {
+    outline: 2px solid #666;
+}
+
+#resultCount {
+    color: #aaa;
+    margin-top: 10px;
+}
+
+.no-result {
+    display: none;
+    color: #aaa;
+    font-size: 18px;
+    margin-top: 30px;
+}

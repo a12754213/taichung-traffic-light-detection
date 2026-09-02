@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <title>台中交通號誌 AI 偵測</title>
+
+    <link
+        rel="stylesheet"
+        href="/static/style.css"
+    >
+</head>
+
+<body>
+
+    <h1>台中市即時交通 CCTV</h1>
+
+    <!-- 搜尋 CCTV -->
+    <div class="search-area">
+
+        <input
+            id="cameraSearch"
+            class="search-input"
+            type="text"
+            placeholder="搜尋路口，例如：臺灣大道"
+        >
+
+        <p id="resultCount">
+            共 {{ cameras|length }} 支攝影機
+        </p>
+
+    </div>
+
+
+    <!-- CCTV 清單 -->
+    <div class="camera-grid">
+
+        {% for camera in cameras %}
+
+        <a
+            class="camera-card"
+            href="/camera/{{ loop.index0 }}"
+            data-road="{{ camera['roadsection'] }}"
+            data-id="{{ camera['cctvid'] }}"
+        >
+
+            <h3>
+                CCTV {{ loop.index0 }}
+            </h3>
+
+            <p>
+                {{ camera["roadsection"] }}
+            </p>
+
+        </a>
+
+        {% endfor %}
+
+    </div>
+
+
+    <p id="noResult" class="no-result">
+        找不到符合的 CCTV
+    </p>
+
+
+    <script>
+
+        // 取得搜尋框與所有 CCTV
+        const searchInput = document.getElementById("cameraSearch");
+        const cards = document.querySelectorAll(".camera-card");
+        const resultCount = document.getElementById("resultCount");
+        const noResult = document.getElementById("noResult");
+
+
+        // 輸入文字時搜尋 CCTV
+        searchInput.addEventListener("input", function () {
+
+            const keyword = searchInput.value
+                .trim()
+                .toLowerCase();
+
+            let visibleCount = 0;
+
+
+            cards.forEach(function (card) {
+
+                const road = card.dataset.road.toLowerCase();
+                const id = card.dataset.id.toLowerCase();
+
+                const matched =
+                    road.includes(keyword) ||
+                    id.includes(keyword);
+
+
+                if (matched) {
+                    card.style.display = "";
+                    visibleCount++;
+                }
+                else {
+                    card.style.display = "none";
+                }
+
+            });
+
+
+            // 顯示搜尋結果數量
+            resultCount.textContent =
+                `找到 ${visibleCount} 支攝影機`;
+
+
+            // 完全找不到時顯示提示
+            if (visibleCount === 0) {
+                noResult.style.display = "block";
+            }
+            else {
+                noResult.style.display = "none";
+            }
+
+        });
+
+    </script>
+
+</body>
+
+</html>

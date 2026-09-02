@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <title>CCTV</title>
+
+    <link
+        rel="stylesheet"
+        href="/static/style.css"
+    >
+</head>
+
+<body>
+
+    <a class="back-button" href="/">
+         ← 返回所有攝影機
+    </a>
+
+    <h1>
+        CCTV {{ camera_index }}
+    </h1>
+
+    <h2>
+        {{ camera["roadsection"] }}
+    </h2>
+
+    <div class="video-container">
+
+        <img
+            class="cctv-video"
+            src="/video_feed/{{ camera_index }}"
+            alt="CCTV 即時畫面"
+        >
+
+    </div>
+    
+    <p>
+        CCTV ID:
+        {{ camera["cctvid"] }}
+    </p>
+
+    <p>
+        經度:
+        {{ camera["px"] }}
+    </p>
+
+    <p>
+        緯度:
+        {{ camera["py"] }}
+    </p>
+
+</body>
+
+</html>
