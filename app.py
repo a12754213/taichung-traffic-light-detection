@@ -19,6 +19,7 @@ API_URL = "https://newdatacenter.taichung.gov.tw/api/v1/no-auth/resource.downloa
 app = FastAPI()
 
 MODEL_ID = "a12754213-gmail-com/my-first-project-fkmn7-5-rfdetr-small-t1"
+DISPLAY_WIDTH = 960
 
 # 讀取 .env
 load_dotenv()
@@ -46,7 +47,6 @@ app.mount(
 )
 
 # 取得政府 CCTV 清單
-# 取得政府 CCTV 清單
 def get_cameras():
 
     # 最多嘗試 5 次
@@ -63,7 +63,6 @@ def get_cameras():
                 response.status_code
             )
 
-            # 成功取得資料
             if (
                 response.status_code == 200
                 and len(response.content) > 0
@@ -72,9 +71,7 @@ def get_cameras():
 
                 try:
                     cameras = json.loads(text)
-
                     print("政府 API 資料取得成功")
-
                     return cameras
 
                 except json.JSONDecodeError:
@@ -86,11 +83,10 @@ def get_cameras():
         except requests.RequestException as e:
             print("政府 API 連線錯誤:", e)
 
-        # 失敗後等 3 秒
         time.sleep(3)
 
-    # 5 次全部失敗
     raise RuntimeError("政府 API 多次連線失敗")
+
 # 首頁
 @app.get("/")
 def home(request: Request):
@@ -123,6 +119,30 @@ def camera_page(
             "camera_index": camera_index
         }
     )
+
+# 統一瀏覽器顯示寬度
+def resize_for_display(frame):
+
+    h, w = frame.shape[:2]
+
+    if w == DISPLAY_WIDTH:
+        return frame
+
+    scale = DISPLAY_WIDTH / w
+    new_h = int(h * scale)
+
+    interpolation = (
+        cv2.INTER_AREA
+        if scale < 1
+        else cv2.INTER_LINEAR
+    )
+
+    return cv2.resize(
+        frame,
+        (DISPLAY_WIDTH, new_h),
+        interpolation=interpolation
+    )
+
 
 #「畫框」
 def draw_predictions(frame, result):
@@ -168,21 +188,29 @@ def draw_predictions(frame, result):
         else:
             color = (255, 255, 255)
 
+        # 依原始解析度調整框與字，縮到網頁後大小會一致
+        display_ratio = frame_w / DISPLAY_WIDTH
+
+        box_thickness = max(
+            1,
+            round(display_ratio)
+        )
+
         # 畫框
         cv2.rectangle(
             frame,
             (x1, y1),
             (x2, y2),
             color,
-            1
+            box_thickness
         )
 
         # 顯示標籤
         label = f"{class_name} {confidence:.2f}"
         font = cv2.FONT_HERSHEY_SIMPLEX
-        font_scale = 0.45
-        thickness = 1
-        padding = 3
+        font_scale = max(0.25, 0.45 * display_ratio)
+        thickness = max(1, round(display_ratio))
+        padding = max(2, round(3 * display_ratio))
 
         # 計算文字大小
         (text_w, text_h), baseline = cv2.getTextSize(
@@ -231,7 +259,8 @@ def draw_predictions(frame, result):
             font,
             font_scale,
             (0, 0, 0),
-            thickness
+            thickness,
+            cv2.LINE_AA
         )
 
     return frame
@@ -328,11 +357,17 @@ def generate_video(camera_index):
 
                     last_inference_time = time.time()
 
-                # 把最新偵測結果畫到畫面上
+                # 把最新偵測結果畫到原始畫面上
                 frame = draw_predictions(frame, latest_result)
 
+                # AI 保留原始解析度，只有網頁顯示統一成 960px
+                display_frame = resize_for_display(frame)
+
                 # 轉成 JPG
-                success, buffer = cv2.imencode(".jpg", frame)
+                success, buffer = cv2.imencode(
+                    ".jpg",
+                    display_frame
+                )
 
                 if not success:
                     continue

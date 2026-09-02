@@ -36,8 +36,10 @@ body {
 }
 
 .cctv-video {
+    display: block;
     width: 100%;
-    max-width: 1000px;
+    max-width: 960px;
+    height: auto;
     border-radius: 10px;
 }
 
@@ -49,14 +51,12 @@ body {
     width: 100%;
     max-width: 600px;
     padding: 14px 16px;
-
     font-size: 18px;
-
     color: white;
     background: #222;
-
     border: 1px solid #444;
     border-radius: 10px;
+    box-sizing: border-box;
 }
 
 .search-input:focus {
