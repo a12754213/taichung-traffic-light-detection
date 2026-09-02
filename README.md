@@ -44,7 +44,8 @@ screenshots/
 加入截圖後，把下面這行放到 README 即可：
 
 ```markdown
-![Traffic Light Detection Demo](screenshots/traffic_light_detection.png)
+![Traffic Light Detection Demo](screenshots/traffic_light_detection01.jpg)
+![Traffic Light Detection Demo](screenshots/traffic_light_detection02.jpg)
 ```
 
 ---
